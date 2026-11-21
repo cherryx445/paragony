@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paragony">
+<title>Paragony</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1ec;--card:#fff;--ink:#1b2420;--mute:#66726c;--line:#dde3dd;--acc:#2f6f4f;--bartek:#b45309;--oliwia:#6d28d9;--err:#b42318}
+@media(prefers-color-scheme:dark){:root{--bg:#121714;--card:#1b231f;--ink:#e9efe9;--mute:#93a39a;--line:#2a352f;--acc:#5fc08f;--bartek:#f0a04b;--oliwia:#b794f6;--err:#ff8a80}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,select{font:inherit;color:inherit}
+.hide{display:none!important}
+.mute{color:var(--mute);font-size:.9rem}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+
+/* start: paragon z kasy */
+#who{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.paper{position:relative;width:100%;max-width:340px;background:var(--card);padding:28px 22px 22px;font-family:'IBM Plex Mono',ui-monospace,monospace}
+.paper::after{content:"";position:absolute;left:0;right:0;top:100%;height:10px;background:linear-gradient(135deg,var(--card) 25%,transparent 25%) -7px 0,linear-gradient(225deg,var(--card) 25%,transparent 25%) -7px 0;background-size:14px 14px}
+.paper h2{margin:0 0 4px;font-size:1.25rem;font-weight:600}
+.paper hr{border:0;border-top:2px dashed var(--line);margin:16px 0}
+.paper button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:14px 0;font-size:1.15rem;font-weight:600;cursor:pointer;text-align:left;border-bottom:1px dashed var(--line)}
+.paper button:last-child{border-bottom:0}
+.paper button:focus-visible,.chips button:focus-visible,nav button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.ini{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800}
+
+/* aplikacja */
+#app{max-width:560px;margin:0 auto;padding:16px 16px 90px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+header h1{font-size:1.5rem;margin:0;letter-spacing:-.02em}
+#me{border:2px solid currentColor;background:none;border-radius:99px;padding:4px 14px;font-weight:600;cursor:pointer}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:14px 0;font-weight:600;color:var(--mute);cursor:pointer}
+nav button[aria-selected=true]{color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.card h3{margin:0 0 10px;font-size:1rem}
+.big{display:flex;align-items:center;justify-content:center;width:100%;padding:22px;border:2px dashed var(--acc);border-radius:14px;color:var(--acc);font-weight:600;font-size:1.1rem;cursor:pointer}
+#prev{width:100%;border-radius:10px;margin-top:12px;max-height:320px;object-fit:contain}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--acc);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;margin-top:12px}
+[data-theme] .btn{color:#fff}
+@media(prefers-color-scheme:dark){.btn{color:#0e1512}}
+.btn:disabled{opacity:.5}
+.btn.ghost{background:none;color:var(--acc);border:1px solid var(--acc)}
+.err{color:var(--err);font-weight:600;margin-top:10px}
+
+/* pozycje */
+.item{padding:12px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0;padding-top:0}
+.sel{display:flex;gap:8px;margin-top:8px}
+.sel select{flex:1;min-width:0;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.chips{display:flex;gap:6px;margin-top:8px}
+.chips button{flex:1;padding:7px 4px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer;font-size:.9rem}
+.chips button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+@media(prefers-color-scheme:dark){.chips button[aria-pressed=true]{color:#0e1512}}
+
+/* lista */
+.rc{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer}
+.save{color:var(--acc);font-size:.9rem;font-weight:600;margin-top:4px}
+.back{border:0;background:none;color:var(--acc);font-weight:600;padding:0 0 12px;cursor:pointer;font-size:1rem}
+
+/* podsumowanie */
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:10px}
+.seg button{flex:1;padding:9px 4px;border:0;background:none;cursor:pointer;font-weight:600;color:var(--mute);font-size:.9rem}
+.seg button[aria-pressed=true]{background:var(--acc);color:#fff}
+@media(prefers-color-scheme:dark){.seg button[aria-pressed=true]{color:#0e1512}}
+.bar{height:7px;border-radius:4px;background:var(--line);margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+.num{font-size:2.1rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stats div{background:var(--bg);border-radius:10px;padding:8px}
+.stats b{display:block;font-size:1.05rem}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+details.cat{border-top:1px solid var(--line);padding:10px 0}
+details.cat:first-of-type{border-top:0;padding-top:0}
+details.cat summary{list-style:none;cursor:pointer}
+details.cat summary::-webkit-details-marker{display:none}
+details.cat summary .row span::after{content:"▾";margin-left:6px;color:var(--mute);display:inline-block;transition:transform .15s}
+details.cat[open] summary .row span::after{transform:rotate(180deg)}
+.sub{margin:10px 0 0 12px}
+.sub .bar i{background:var(--mute)}
+.months{display:flex;align-items:flex-end;gap:6px;height:110px}
+.months div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:.75rem;color:var(--mute)}
+.months i{display:block;width:100%;background:var(--acc);border-radius:4px 4px 0 0;min-height:2px}
+.spin{width:18px;height:18px;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;display:inline-block;vertical-align:-3px;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spin{animation-duration:3s}details.cat summary .row span::after{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="who" class="hide">
+  <div class="paper">
+    <h2>Kto korzysta?</h2>
+    <div class="mute">Wybierz, czyje paragony pokazać</div>
+    <hr>
+    <button data-u="Bartek"><span class="ini" style="background:var(--bartek)">B</span>Bartek</button>
+    <button data-u="Oliwia"><span class="ini" style="background:var(--oliwia)">O</span>Oliwia</button>
+  </div>
+</div>
+
+<div id="app" class="hide">
+  <header><h1>Paragony</h1><button id="me"></button></header>
+
+  <section id="tab-add">
+    <div class="card" id="pick">
+      <label class="big" for="file">Zrób zdjęcie lub wybierz z galerii</label>
+      <input id="file" type="file" accept="image/*" class="hide">
+      <img id="prev" class="hide" alt="Podgląd paragonu">
+      <button id="send" class="btn hide">Wyślij paragon</button>
+      <div id="addErr" class="err hide"></div>
+    </div>
+    <div id="result" class="hide"></div>
+  </section>
+
+  <section id="tab-list" class="hide"><div id="list"></div></section>
+
+  <section id="tab-sum" class="hide">
+    <div class="seg" id="scope">
+      <button data-v="me" aria-pressed="true">Moje</button>
+      <button data-v="all" aria-pressed="false">Razem</button>
+    </div>
+    <div class="seg" id="period">
+      <button data-v="month" aria-pressed="true">Ten miesiąc</button>
+      <button data-v="prev" aria-pressed="false">Poprzedni</button>
+      <button data-v="3m" aria-pressed="false">3 mies.</button>
+      <button data-v="year" aria-pressed="false">Rok</button>
+    </div>
+    <div id="sum"></div>
+  </section>
+
+  <nav role="tablist">
+    <button data-t="add" aria-selected="true">Dodaj</button>
+    <button data-t="list" aria-selected="false">Paragony</button>
+    <button data-t="sum" aria-selected="false">Statystyki</button>
+  </nav>
+</div>
+
+<script>
+/* ====== KONFIGURACJA ====== */
+const CFG = {
+  MOCK: true,                // true = dane testowe bez flow; po podpięciu flow zmień na false
+  ADD_URL: '',               // flow: dodanie paragonu
+  LIST_URL: '',              // flow: lista paragonów
+  RECEIPT_URL: '',           // flow: pozycje jednego paragonu
+  SUMMARY_URL: '',           // flow: statystyki
+  UPDATE_URL: '',            // flow: korekta pozycji
+  SECRET: 'ZMIEN-MNIE',      // sprawdzasz w pierwszym nodzie każdego flow
+  USERS: ['Bartek', 'Oliwia'],
+  ASSIGN: ['Wspólne', 'Bartek', 'Oliwia'],
+  MAX_PX: 1600,
+  TAX: {                     // kategoria -> podkategorie (te same wartości mają trafić do Choice w Dataverse i do promptu AI)
+    'Jedzenie': ['Produkty podstawowe', 'Napoje', 'Gotowe jedzenie', 'Słodycze', 'Przekąski', 'Alkohol'],
+    'Dom i chemia': ['Środki czystości', 'Kuchnia i wyposażenie', 'Dekoracje', 'Narzędzia'],
+    'Zdrowie i uroda': ['Apteka', 'Kosmetyki', 'Higiena'],
+    'Transport': ['Paliwo', 'Bilety i komunikacja', 'Parking i opłaty', 'Serwis'],
+    'Rozrywka': ['Kino i wydarzenia', 'Gry i subskrypcje', 'Wyjścia'],
+    'Ubrania': ['Odzież', 'Obuwie', 'Akcesoria'],
+    'Inne': ['Prezenty', 'Zwierzęta', 'Reszta']
+  }
+};
+
+/* ====== POMOCNICZE ====== */
+const $ = s => document.querySelector(s);
+const pln = n => Number(n || 0).toLocaleString('pl-PL', {style: 'currency', currency: 'PLN'});
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const col = n => n === 'Bartek' ? 'var(--bartek)' : 'var(--oliwia)';
+let user = null, imgData = null, scope = 'me', period = 'month';
+
+function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+
+/* text/plain = "prosty" request, brak preflightu CORS */
+async function api(url, payload) {
+  if (CFG.MOCK) return mock(payload);
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain'},
+    body: JSON.stringify({secret: CFG.SECRET, user, ...payload})
+  });
+  if (!r.ok) throw new Error('Błąd serwera (' + r.status + ')');
+  return r.json();
+}
+
+/* ====== WYBÓR OSOBY ====== */
+function setUser(u) {
+  user = u; save('user', u);
+  $('#me').textContent = u; $('#me').style.color = col(u);
+  $('#who').classList.add('hide'); $('#app').classList.remove('hide');
+  show('add');
+}
+document.querySelectorAll('#who button').forEach(b => b.onclick = () => setUser(b.dataset.u));
+$('#me').onclick = () => { $('#app').classList.add('hide'); $('#who').classList.remove('hide'); };
+
+/* ====== ZAKŁADKI ====== */
+function show(t) {
+  ['add', 'list', 'sum'].forEach(x => $('#tab-' + x).classList.toggle('hide', x !== t));
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === t));
+  if (t === 'list') loadList();
+  if (t === 'sum') loadSum();
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.t));
+
+/* ====== ZDJĘCIE ====== */
+$('#file').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  $('#addErr').classList.add('hide');
+  try {
+    imgData = await shrink(f);
+    $('#prev').src = imgData; $('#prev').classList.remove('hide');
+    $('#send').classList.remove('hide');
+  } catch (err) { showErr('Nie udało się wczytać zdjęcia. Spróbuj inne.'); }
+};
+function shrink(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, CFG.MAX_PX / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg', .85));
+    };
+    img.onerror = rej; img.src = url;
+  });
+}
+function showErr(m) { const e = $('#addErr'); e.textContent = m; e.classList.remove('hide'); }
+
+$('#send').onclick = async () => {
+  const b = $('#send'); b.disabled = true;
+  b.innerHTML = '<span class="spin"></span>Czytam paragon…';
+  $('#addErr').classList.add('hide');
+  try {
+    const d = await api(CFG.ADD_URL, {action: 'add', image: imgData.split(',')[1]});
+    if (d.error) throw new Error(d.error);
+    $('#result').classList.remove('hide');
+    $('#result').innerHTML = receiptHTML(d) + '<button class="btn" id="again">Dodaj kolejny</button>';
+    bindItems($('#result'));
+    $('#again').onclick = resetAdd;
+    $('#pick').classList.add('hide');
+  } catch (err) { showErr(err.message || 'Coś poszło nie tak. Spróbuj ponownie.'); }
+  b.disabled = false; b.textContent = 'Wyślij paragon';
+};
+function resetAdd() {
+  imgData = null; $('#file').value = '';
+  $('#prev').classList.add('hide'); $('#send').classList.add('hide');
+  $('#result').classList.add('hide'); $('#pick').classList.remove('hide');
+}
+
+/* ====== PARAGON + POZYCJE (używane po dodaniu i w szczegółach) ====== */
+function opts(list, cur) { return list.map(o => `<option ${o === cur ? 'selected' : ''}>${esc(o)}</option>`).join(''); }
+
+function receiptHTML(d) {
+  const sv = d.saved ?? (d.items || []).reduce((s, i) => s + (i.discount || 0), 0);
+  return `
+    <div class="card">
+      <div class="row"><b>${esc(d.shop || 'Sklep')}</b><span class="num">${pln(d.total)}</span></div>
+      <div class="mute">${esc(d.date || '')} · płaci ${esc(d.payer || user)}</div>
+      ${sv > 0 ? `<div class="save">Zaoszczędzone na promocjach: ${pln(sv)}</div>` : ''}
+    </div>
+    <div class="card">
+      ${(d.items || []).map(i => `
+        <div class="item" data-id="${esc(i.id)}">
+          <div class="row"><b>${esc(i.name)}</b><span>${pln(i.amount)}</span></div>
+          ${i.discount > 0 ? `<div class="save">Promocja: oszczędzone ${pln(i.discount)}</div>` : ''}
+          <div class="sel">
+            <select data-f="category" aria-label="Kategoria">${opts(Object.keys(CFG.TAX), i.category)}</select>
+            <select data-f="subcategory" aria-label="Podkategoria">${opts(CFG.TAX[i.category] || [], i.subcategory)}</select>
+          </div>
+          <div class="chips">${CFG.ASSIGN.map(a => `<button data-a="${a}" aria-pressed="${a === i.assignment}">${a}</button>`).join('')}</div>
+        </div>`).join('') || '<div class="mute">Brak pozycji na tym paragonie.</div>'}
+    </div>`;
+}
+
+function bindItems(root) {
+  const send = async (el, changes, mark) => {
+    const id = el.closest('.item').dataset.id;
+    try { await api(CFG.UPDATE_URL, {action: 'update', itemId: id, changes}); }
+    catch (e) { mark.style.outline = '2px solid var(--err)'; return; }
+    mark.style.outline = '2px solid var(--acc)'; setTimeout(() => mark.style.outline = '', 600);
+  };
+  root.querySelectorAll('select[data-f=category]').forEach(s => s.onchange = () => {
+    const sub = s.parentElement.querySelector('[data-f=subcategory]');
+    sub.innerHTML = opts(CFG.TAX[s.value], null);
+    send(s, {category: s.value, subcategory: sub.value}, s.parentElement);
+  });
+  root.querySelectorAll('select[data-f=subcategory]').forEach(s => s.onchange = () => send(s, {subcategory: s.value}, s));
+  root.querySelectorAll('.chips button').forEach(b => b.onclick = () => {
+    b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    send(b, {assignment: b.dataset.a}, b.parentElement);
+  });
+}
+
+/* ====== LISTA PARAGONÓW -> SZCZEGÓŁY ====== */
+async function loadList() {
+  const L = $('#list'); L.innerHTML = '<div class="mute"><span class="spin"></span>Ładuję…</div>';
+  try {
+    const d = await api(CFG.LIST_URL, {action: 'list'});
+    L.innerHTML = (d.receipts || []).map(r => `
+      <button class="rc" data-id="${esc(r.id)}">
+        <div class="row"><b>${esc(r.shop)}</b><span>${pln(r.total)}</span></div>
+        <div class="mute"><span class="dot" style="background:${col(r.payer)}"></span>${esc(r.payer)} · ${esc(r.date)} · ${esc(r.status)}${r.saved > 0 ? ` · <span style="color:var(--acc)">oszczędzone ${pln(r.saved)}</span>` : ''}</div>
+      </button>`).join('') || '<div class="mute">Brak paragonów. Dodaj pierwszy w zakładce Dodaj.</div>';
+    L.querySelectorAll('.rc').forEach(b => b.onclick = () => openReceipt(b.dataset.id));
+  } catch (e) { L.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+}
+async function openReceipt(id) {
+  const L = $('#list'); L.innerHTML = '<div class="mute"><span class="spin"></span>Ładuję…</div>';
+  try {
+    const d = await api(CFG.RECEIPT_URL, {action: 'receipt', receiptId: id});
+    L.innerHTML = '<button class="back" id="back">‹ Wszystkie paragony</button>' + receiptHTML(d);
+    bindItems(L); $('#back').onclick = loadList;
+  } catch (e) { L.innerHTML = '<button class="back" id="back">‹ Wszystkie paragony</button><div class="err">' + esc(e.message) + '</div>'; $('#back').onclick = loadList; }
+}
+
+/* ====== STATYSTYKI ====== */
+[['#scope', v => scope = v], ['#period', v => period = v]].forEach(([sel, set]) =>
+  document.querySelectorAll(sel + ' button').forEach(b => b.onclick = () => {
+    set(b.dataset.v);
+    document.querySelectorAll(sel + ' button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    loadSum();
+  }));
+
+function rows(list, total, color) {
+  return (list || []).map(c => `
+    <div style="margin-bottom:10px">
+      <div class="row"><span>${color ? `<span class="dot" style="background:${col(c.name)}"></span>` : ''}${esc(c.name)}</span>
+      <b>${pln(c.total)} <span class="mute">${total ? Math.round(c.total / total * 100) : 0}%</span></b></div>
+      <div class="bar"><i style="width:${total ? c.total / total * 100 : 0}%"></i></div>
+    </div>`).join('') || '<div class="mute">Brak danych.</div>';
+}
+
+async function loadSum() {
+  const S = $('#sum'); S.innerHTML = '<div class="mute"><span class="spin"></span>Liczę…</div>';
+  try {
+    const d = await api(CFG.SUMMARY_URL, {action: 'summary', scope, period});
+    const T = d.total || 0, maxM = Math.max(1, ...(d.byMonth || []).map(m => m.total));
+    S.innerHTML = `
+      <div class="card">
+        <div class="mute">${scope === 'me' ? 'Twoje wydatki' : 'Wydatki razem'}</div>
+        <div class="num">${pln(T)}</div>
+        <div class="stats">
+          <div><b>${d.receiptCount ?? 0}</b><span class="mute">paragonów</span></div>
+          <div><b>${pln(d.avgReceipt)}</b><span class="mute">średnio</span></div>
+          <div><b>${pln(d.maxReceipt?.total)}</b><span class="mute">${esc(d.maxReceipt?.shop || 'największy')}</span></div>
+        </div>
+      </div>
+      ${d.saved > 0 ? `<div class="card"><div class="mute">Zaoszczędzone na promocjach</div><div class="num" style="color:var(--acc)">${pln(d.saved)}</div><div class="mute">Bez promocji: ${pln(T + d.saved)} (${Math.round(d.saved / (T + d.saved) * 100)}% taniej)</div></div>` : ''}
+      <div class="card"><h3>Kto ile wydał</h3>${rows(d.byPerson, T, true)}</div>
+      <div class="card"><h3>Wspólne i osobiste</h3>${rows(d.byAssign, T)}</div>
+      <div class="card"><h3>Kategorie</h3>
+        ${(d.byCategory || []).map(c => `
+          <details class="cat">
+            <summary>
+              <div class="row"><span>${esc(c.name)}</span><b>${pln(c.total)} <span class="mute">${T ? Math.round(c.total / T * 100) : 0}%</span></b></div>
+              <div class="bar"><i style="width:${T ? c.total / T * 100 : 0}%"></i></div>
+            </summary>
+            <div class="sub">${rows(c.subs, c.total)}</div>
+          </details>`).join('') || '<div class="mute">Brak danych.</div>'}
+      </div>
+      <div class="card"><h3>Najczęstsze sklepy</h3>
+        ${(d.topShops || []).map(s => `<div class="row" style="margin-bottom:6px"><span>${esc(s.name)} <span class="mute">× ${s.count}</span></span><b>${pln(s.total)}</b></div>`).join('') || '<div class="mute">Brak danych.</div>'}
+      </div>
+      <div class="card"><h3>Miesiące</h3>
+        <div class="months">${(d.byMonth || []).map(m => `<div><i style="height:${m.total / maxM * 80}px" title="${pln(m.total)}"></i>${esc(m.label)}</div>`).join('')}</div>
+      </div>`;
+  } catch (e) { S.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
+}
+
+/* ====== MOCK (tryb testowy) ====== */
+const M_ITEMS = [
+  {id: '1', name: 'Mleko 3,2%', amount: 4.49, discount: 0.5, category: 'Jedzenie', subcategory: 'Produkty podstawowe', assignment: 'Wspólne'},
+  {id: '2', name: 'Cola Zero 1,5l', amount: 7.99, discount: 2, category: 'Jedzenie', subcategory: 'Napoje', assignment: 'Bartek'},
+  {id: '3', name: 'Czekolada Milka', amount: 6.49, category: 'Jedzenie', subcategory: 'Słodycze', assignment: 'Oliwia'},
+  {id: '4', name: 'Chipsy paprykowe', amount: 5.99, discount: 1.5, category: 'Jedzenie', subcategory: 'Przekąski', assignment: 'Wspólne'},
+  {id: '5', name: 'Płyn do naczyń', amount: 7.99, category: 'Dom i chemia', subcategory: 'Środki czystości', assignment: 'Wspólne'},
+  {id: '6', name: 'Szampon', amount: 18.99, category: 'Zdrowie i uroda', subcategory: 'Kosmetyki', assignment: 'Oliwia'}];
+function mock(p) {
+  const data = {
+    add: {shop: 'Biedronka', date: '2026-11-21', payer: user, total: 51.94, items: M_ITEMS},
+    receipt: {shop: 'Biedronka', date: '2026-11-21', payer: 'Bartek', total: 51.94, items: M_ITEMS},
+    update: {ok: true},
+    list: {receipts: [
+      {id: 'a', shop: 'Biedronka', saved: 4, total: 51.94, payer: 'Bartek', date: '2026-11-21', status: 'Gotowe'},
+      {id: 'b', shop: 'Pizzeria Napoli', total: 94.5, payer: 'Oliwia', date: '2026-11-19', status: 'Gotowe'}]},
+    summary: {total: 1240.5, saved: 87.4, receiptCount: 31, avgReceipt: 40.02, maxReceipt: {shop: 'Pizzeria', total: 94.5},
+      byPerson: [{name: 'Bartek', total: 720.3}, {name: 'Oliwia', total: 520.2}],
+      byAssign: [{name: 'Wspólne', total: 690}, {name: 'Bartek', total: 310.5}, {name: 'Oliwia', total: 240}],
+      byCategory: [
+        {name: 'Jedzenie', total: 640, subs: [{name: 'Produkty podstawowe', total: 290}, {name: 'Gotowe jedzenie', total: 170}, {name: 'Napoje', total: 80}, {name: 'Słodycze', total: 60}, {name: 'Przekąski', total: 40}]},
+        {name: 'Dom i chemia', total: 210.5, subs: [{name: 'Środki czystości', total: 120.5}, {name: 'Kuchnia i wyposażenie', total: 90}]},
+        {name: 'Transport', total: 180, subs: [{name: 'Paliwo', total: 150}, {name: 'Parking i opłaty', total: 30}]},
+        {name: 'Rozrywka', total: 210, subs: [{name: 'Kino i wydarzenia', total: 120}, {name: 'Gry i subskrypcje', total: 90}]}],
+      topShops: [{name: 'Biedronka', total: 410, count: 12}, {name: 'Rossmann', total: 160, count: 4}, {name: 'Orlen', total: 150, count: 3}],
+      byMonth: [{label: 'cze', total: 980}, {label: 'lip', total: 1100}, {label: 'sie', total: 870}, {label: 'wrz', total: 1210}, {label: 'paź', total: 1150}, {label: 'lis', total: 1240}]}
+  };
+  return new Promise(r => setTimeout(() => r(data[p.action]), 700));
+}
+
+/* ====== START ====== */
+const saved = load('user');
+if (saved && CFG.USERS.includes(saved)) setUser(saved); else $('#who').classList.remove('hide');
+</script>
+</body>
+</html>
