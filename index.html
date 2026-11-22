@@ -219,7 +219,7 @@ async function callFlow(image) {
   /* text/plain = "prosty" request, bez preflightu CORS */
   const r = await fetch(CFG.FLOW_URL, {method: 'POST', headers: {'Content-Type': 'text/plain'},
     body: JSON.stringify({secret: CFG.SECRET, user, image})});
-  if (!r.ok) throw new Error('Flow: błąd ' + r.status);
+  if (!r.ok) throw new Error('Flow: błąd ' + r.status + ' ' + (await r.text()).slice(0, 200));
   return r.json();
 }
 function norm(i) {
