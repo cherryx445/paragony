@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef1ec;--card:#fff;--ink:#1b2420;--mute:#66726c;--line:#dde3dd;--acc:#2f6f4f;--bartek:#b45309;--oliwia:#6d28d9;--err:#b42318}
-@media(prefers-color-scheme:dark){:root{--bg:#121714;--card:#1b231f;--ink:#e9efe9;--mute:#93a39a;--line:#2a352f;--acc:#5fc08f;--bartek:#f0a04b;--oliwia:#b794f6;--err:#ff8a80}}
+:root{--bg:#eef1ec;--card:#fff;--ink:#1b2420;--mute:#66726c;--line:#dde3dd;--acc:#2f6f4f;--onacc:#fff;--bartek:#b45309;--oliwia:#6d28d9;--err:#b42318}
+@media(prefers-color-scheme:dark){:root{--bg:#121714;--card:#1b231f;--ink:#e9efe9;--mute:#93a39a;--line:#2a352f;--acc:#5fc08f;--onacc:#0e1512;--bartek:#f0a04b;--oliwia:#b794f6;--err:#ff8a80}}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
 body{background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
@@ -18,6 +18,7 @@ button,select{font:inherit;color:inherit}
 .hide{display:none!important}
 .mute{color:var(--mute);font-size:.9rem}
 .row{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.mock{background:var(--acc);color:var(--onacc);text-align:center;padding:6px;font-size:.85rem;font-weight:600}
 
 /* start: paragon z kasy */
 #who{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
@@ -42,12 +43,11 @@ nav button[aria-selected=true]{color:var(--acc);box-shadow:inset 0 3px 0 var(--a
 .card h3{margin:0 0 10px;font-size:1rem}
 .big{display:flex;align-items:center;justify-content:center;width:100%;padding:22px;border:2px dashed var(--acc);border-radius:14px;color:var(--acc);font-weight:600;font-size:1.1rem;cursor:pointer}
 #prev{width:100%;border-radius:10px;margin-top:12px;max-height:320px;object-fit:contain}
-.btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--acc);color:#fff;font-weight:700;font-size:1rem;cursor:pointer;margin-top:12px}
-[data-theme] .btn{color:#fff}
-@media(prefers-color-scheme:dark){.btn{color:#0e1512}}
+.btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--acc);color:var(--onacc);font-weight:700;font-size:1rem;cursor:pointer;margin-top:12px}
 .btn:disabled{opacity:.5}
-.btn.ghost{background:none;color:var(--acc);border:1px solid var(--acc)}
+.btn.danger{background:none;color:var(--err);border:1px solid var(--err)}
 .err{color:var(--err);font-weight:600;margin-top:10px}
+.save{color:var(--acc);font-size:.9rem;font-weight:600;margin-top:4px}
 
 /* pozycje */
 .item{padding:12px 0;border-top:1px solid var(--line)}
@@ -56,19 +56,16 @@ nav button[aria-selected=true]{color:var(--acc);box-shadow:inset 0 3px 0 var(--a
 .sel select{flex:1;min-width:0;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
 .chips{display:flex;gap:6px;margin-top:8px}
 .chips button{flex:1;padding:7px 4px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer;font-size:.9rem}
-.chips button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
-@media(prefers-color-scheme:dark){.chips button[aria-pressed=true]{color:#0e1512}}
+.chips button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 
 /* lista */
 .rc{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer}
-.save{color:var(--acc);font-size:.9rem;font-weight:600;margin-top:4px}
 .back{border:0;background:none;color:var(--acc);font-weight:600;padding:0 0 12px;cursor:pointer;font-size:1rem}
 
-/* podsumowanie */
+/* statystyki */
 .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:10px}
 .seg button{flex:1;padding:9px 4px;border:0;background:none;cursor:pointer;font-weight:600;color:var(--mute);font-size:.9rem}
-.seg button[aria-pressed=true]{background:var(--acc);color:#fff}
-@media(prefers-color-scheme:dark){.seg button[aria-pressed=true]{color:#0e1512}}
+.seg button[aria-pressed=true]{background:var(--acc);color:var(--onacc)}
 .bar{height:7px;border-radius:4px;background:var(--line);margin-top:5px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--acc)}
 .num{font-size:2.1rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
@@ -105,6 +102,7 @@ details.cat[open] summary .row span::after{transform:rotate(180deg)}
 </div>
 
 <div id="app" class="hide">
+  <div id="mockbar" class="mock hide">Tryb testowy: dane przykładowe, nic się nie zapisuje</div>
   <header><h1>Paragony</h1><button id="me"></button></header>
 
   <section id="tab-add">
@@ -144,17 +142,15 @@ details.cat[open] summary .row span::after{transform:rotate(180deg)}
 <script>
 /* ====== KONFIGURACJA ====== */
 const CFG = {
-  MOCK: true,                // true = dane testowe bez flow; po podpięciu flow zmień na false
-  ADD_URL: '',               // flow: dodanie paragonu
-  LIST_URL: '',              // flow: lista paragonów
-  RECEIPT_URL: '',           // flow: pozycje jednego paragonu
-  SUMMARY_URL: '',           // flow: statystyki
-  UPDATE_URL: '',            // flow: korekta pozycji
-  SECRET: 'ZMIEN-MNIE',      // sprawdzasz w pierwszym nodzie każdego flow
+  MOCK: true,                // true = dane przykładowe; po wpisaniu kluczy zmień na false
+  SUPABASE_URL: '',          // np. https://abcdxyz.supabase.co
+  SUPABASE_KEY: '',          // anon / publishable key
+  FLOW_URL: '',              // URL triggera flow w Power Automate
+  SECRET: 'ZMIEN-MNIE',      // sprawdzany w pierwszym nodzie flow
   USERS: ['Bartek', 'Oliwia'],
   ASSIGN: ['Wspólne', 'Bartek', 'Oliwia'],
   MAX_PX: 1600,
-  TAX: {                     // kategoria -> podkategorie (te same wartości mają trafić do Choice w Dataverse i do promptu AI)
+  TAX: {                     // te same nazwy muszą być w prompcie AI
     'Jedzenie': ['Produkty podstawowe', 'Napoje', 'Gotowe jedzenie', 'Słodycze', 'Przekąski', 'Alkohol'],
     'Dom i chemia': ['Środki czystości', 'Kuchnia i wyposażenie', 'Dekoracje', 'Narzędzia'],
     'Zdrowie i uroda': ['Apteka', 'Kosmetyki', 'Higiena'],
@@ -170,21 +166,68 @@ const $ = s => document.querySelector(s);
 const pln = n => Number(n || 0).toLocaleString('pl-PL', {style: 'currency', currency: 'PLN'});
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const col = n => n === 'Bartek' ? 'var(--bartek)' : 'var(--oliwia)';
+const MON = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+const r2 = n => Math.round(n * 100) / 100;
+const iso = ago => { const d = new Date(); d.setDate(d.getDate() - ago); return d.toISOString().slice(0, 10); };
 let user = null, imgData = null, scope = 'me', period = 'month';
 
 function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
-/* text/plain = "prosty" request, brak preflightu CORS */
-async function api(url, payload) {
-  if (CFG.MOCK) return mock(payload);
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'text/plain'},
-    body: JSON.stringify({secret: CFG.SECRET, user, ...payload})
+/* ====== BAZA (Supabase REST) ====== */
+let RECEIPTS = [], seeded = false;
+async function sb(path, opt = {}) {
+  const r = await fetch(CFG.SUPABASE_URL + '/rest/v1/' + path, {
+    ...opt,
+    headers: {apikey: CFG.SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=representation', ...(opt.headers || {})}
   });
-  if (!r.ok) throw new Error('Błąd serwera (' + r.status + ')');
+  if (!r.ok) throw new Error('Baza danych: błąd ' + r.status);
+  return r.status === 204 ? null : r.json();
+}
+const DB = {
+  async list() {
+    if (CFG.MOCK) { if (!seeded) { RECEIPTS = seed(); seeded = true; } return RECEIPTS; }
+    RECEIPTS = await sb('receipts?select=*&order=purchase_date.desc,created_at.desc&limit=2000');
+    return RECEIPTS;
+  },
+  async insert(row) {
+    if (CFG.MOCK) { await DB.list(); row.id = 'm' + Date.now(); RECEIPTS.unshift(row); return row; }
+    const [r] = await sb('receipts', {method: 'POST', body: JSON.stringify(row)});
+    RECEIPTS.unshift(r); return r;
+  },
+  async patch(id, patch) {
+    if (!CFG.MOCK) await sb('receipts?id=eq.' + encodeURIComponent(id), {method: 'PATCH', body: JSON.stringify(patch)});
+    Object.assign(RECEIPTS.find(x => String(x.id) === String(id)), patch);
+  },
+  async remove(id) {
+    if (!CFG.MOCK) await sb('receipts?id=eq.' + encodeURIComponent(id), {method: 'DELETE'});
+    RECEIPTS = RECEIPTS.filter(x => String(x.id) !== String(id));
+  }
+};
+
+/* ====== FLOW (jedyne zadanie: zdjęcie -> JSON) ====== */
+async function callFlow(image) {
+  if (CFG.MOCK) {
+    await new Promise(r => setTimeout(r, 900));
+    return {shop: 'Biedronka', date: iso(0), total: 33.95, items: [
+      {name: 'Jogurt naturalny', amount: 3.49, discount: 1, category: 'Jedzenie', subcategory: 'Produkty podstawowe', assignment: 'Wspólne'},
+      {name: 'Sok pomarańczowy', amount: 6.99, discount: 0, category: 'Jedzenie', subcategory: 'Napoje', assignment: 'Wspólne'},
+      {name: 'Batonik', amount: 3.99, discount: 0, category: 'Jedzenie', subcategory: 'Słodycze', assignment: user},
+      {name: 'Płyn do szyb', amount: 9.49, discount: 2.5, category: 'Dom i chemia', subcategory: 'Środki czystości', assignment: 'Wspólne'}]};
+  }
+  /* text/plain = "prosty" request, bez preflightu CORS */
+  const r = await fetch(CFG.FLOW_URL, {method: 'POST', headers: {'Content-Type': 'text/plain'},
+    body: JSON.stringify({secret: CFG.SECRET, user, image})});
+  if (!r.ok) throw new Error('Flow: błąd ' + r.status);
   return r.json();
+}
+function norm(i) {
+  const category = CFG.TAX[i.category] ? i.category : 'Inne';
+  const subs = CFG.TAX[category];
+  return {name: String(i.name || '').slice(0, 120), amount: r2(+i.amount || 0), discount: r2(+i.discount || 0), category,
+    subcategory: subs.includes(i.subcategory) ? i.subcategory : subs[0],
+    assignment: CFG.ASSIGN.includes(i.assignment) ? i.assignment : 'Wspólne'};
 }
 
 /* ====== WYBÓR OSOBY ====== */
@@ -192,6 +235,7 @@ function setUser(u) {
   user = u; save('user', u);
   $('#me').textContent = u; $('#me').style.color = col(u);
   $('#who').classList.add('hide'); $('#app').classList.remove('hide');
+  $('#mockbar').classList.toggle('hide', !CFG.MOCK);
   show('add');
 }
 document.querySelectorAll('#who button').forEach(b => b.onclick = () => setUser(b.dataset.u));
@@ -206,7 +250,7 @@ function show(t) {
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.t));
 
-/* ====== ZDJĘCIE ====== */
+/* ====== DODAWANIE ====== */
 $('#file').onchange = async e => {
   const f = e.target.files[0]; if (!f) return;
   $('#addErr').classList.add('hide');
@@ -237,10 +281,13 @@ $('#send').onclick = async () => {
   b.innerHTML = '<span class="spin"></span>Czytam paragon…';
   $('#addErr').classList.add('hide');
   try {
-    const d = await api(CFG.ADD_URL, {action: 'add', image: imgData.split(',')[1]});
-    if (d.error) throw new Error(d.error);
+    const f = await callFlow(imgData.split(',')[1]);
+    if (f.error) throw new Error(f.error);
+    const items = (f.items || []).map(norm);
+    const row = await DB.insert({shop: f.shop || 'Sklep', purchase_date: f.date || iso(0), payer: user, items,
+      total: r2(+f.total || sum(items, i => i.amount)), saved: r2(sum(items, i => i.discount))});
     $('#result').classList.remove('hide');
-    $('#result').innerHTML = receiptHTML(d) + '<button class="btn" id="again">Dodaj kolejny</button>';
+    $('#result').innerHTML = receiptHTML(row) + '<button class="btn" id="again">Dodaj kolejny</button>';
     bindItems($('#result'));
     $('#again').onclick = resetAdd;
     $('#pick').classList.add('hide');
@@ -253,20 +300,20 @@ function resetAdd() {
   $('#result').classList.add('hide'); $('#pick').classList.remove('hide');
 }
 
-/* ====== PARAGON + POZYCJE (używane po dodaniu i w szczegółach) ====== */
-function opts(list, cur) { return list.map(o => `<option ${o === cur ? 'selected' : ''}>${esc(o)}</option>`).join(''); }
+/* ====== PARAGON + POZYCJE ====== */
+const opts = (list, cur) => list.map(o => `<option ${o === cur ? 'selected' : ''}>${esc(o)}</option>`).join('');
 
 function receiptHTML(d) {
-  const sv = d.saved ?? (d.items || []).reduce((s, i) => s + (i.discount || 0), 0);
-  return `
+  const sv = sum(d.items || [], i => i.discount || 0);
+  return `<div data-rid="${esc(d.id)}">
     <div class="card">
-      <div class="row"><b>${esc(d.shop || 'Sklep')}</b><span class="num">${pln(d.total)}</span></div>
-      <div class="mute">${esc(d.date || '')} · płaci ${esc(d.payer || user)}</div>
+      <div class="row"><b>${esc(d.shop)}</b><span class="num">${pln(d.total)}</span></div>
+      <div class="mute">${esc(d.purchase_date)} · płaci ${esc(d.payer)}</div>
       ${sv > 0 ? `<div class="save">Zaoszczędzone na promocjach: ${pln(sv)}</div>` : ''}
     </div>
     <div class="card">
-      ${(d.items || []).map(i => `
-        <div class="item" data-id="${esc(i.id)}">
+      ${(d.items || []).map((i, k) => `
+        <div class="item" data-i="${k}">
           <div class="row"><b>${esc(i.name)}</b><span>${pln(i.amount)}</span></div>
           ${i.discount > 0 ? `<div class="save">Promocja: oszczędzone ${pln(i.discount)}</div>` : ''}
           <div class="sel">
@@ -275,15 +322,17 @@ function receiptHTML(d) {
           </div>
           <div class="chips">${CFG.ASSIGN.map(a => `<button data-a="${a}" aria-pressed="${a === i.assignment}">${a}</button>`).join('')}</div>
         </div>`).join('') || '<div class="mute">Brak pozycji na tym paragonie.</div>'}
-    </div>`;
+    </div></div>`;
 }
 
 function bindItems(root) {
   const send = async (el, changes, mark) => {
-    const id = el.closest('.item').dataset.id;
-    try { await api(CFG.UPDATE_URL, {action: 'update', itemId: id, changes}); }
-    catch (e) { mark.style.outline = '2px solid var(--err)'; return; }
-    mark.style.outline = '2px solid var(--acc)'; setTimeout(() => mark.style.outline = '', 600);
+    const rid = el.closest('[data-rid]').dataset.rid, k = +el.closest('.item').dataset.i;
+    const r = RECEIPTS.find(x => String(x.id) === rid);
+    const items = r.items.map((x, n) => n === k ? {...x, ...changes} : x);
+    try { await DB.patch(rid, {items}); mark.style.outline = '2px solid var(--acc)'; }
+    catch (e) { mark.style.outline = '2px solid var(--err)'; }
+    setTimeout(() => mark.style.outline = '', 700);
   };
   root.querySelectorAll('select[data-f=category]').forEach(s => s.onchange = () => {
     const sub = s.parentElement.querySelector('[data-f=subcategory]');
@@ -297,35 +346,80 @@ function bindItems(root) {
   });
 }
 
-/* ====== LISTA PARAGONÓW -> SZCZEGÓŁY ====== */
+/* ====== LISTA -> SZCZEGÓŁY ====== */
 async function loadList() {
   const L = $('#list'); L.innerHTML = '<div class="mute"><span class="spin"></span>Ładuję…</div>';
   try {
-    const d = await api(CFG.LIST_URL, {action: 'list'});
-    L.innerHTML = (d.receipts || []).map(r => `
+    const rs = await DB.list();
+    L.innerHTML = rs.map(r => `
       <button class="rc" data-id="${esc(r.id)}">
         <div class="row"><b>${esc(r.shop)}</b><span>${pln(r.total)}</span></div>
-        <div class="mute"><span class="dot" style="background:${col(r.payer)}"></span>${esc(r.payer)} · ${esc(r.date)} · ${esc(r.status)}${r.saved > 0 ? ` · <span style="color:var(--acc)">oszczędzone ${pln(r.saved)}</span>` : ''}</div>
+        <div class="mute"><span class="dot" style="background:${col(r.payer)}"></span>${esc(r.payer)} · ${esc(r.purchase_date)}${r.saved > 0 ? ` · <span style="color:var(--acc)">oszczędzone ${pln(r.saved)}</span>` : ''}</div>
       </button>`).join('') || '<div class="mute">Brak paragonów. Dodaj pierwszy w zakładce Dodaj.</div>';
     L.querySelectorAll('.rc').forEach(b => b.onclick = () => openReceipt(b.dataset.id));
   } catch (e) { L.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
 }
-async function openReceipt(id) {
-  const L = $('#list'); L.innerHTML = '<div class="mute"><span class="spin"></span>Ładuję…</div>';
-  try {
-    const d = await api(CFG.RECEIPT_URL, {action: 'receipt', receiptId: id});
-    L.innerHTML = '<button class="back" id="back">‹ Wszystkie paragony</button>' + receiptHTML(d);
-    bindItems(L); $('#back').onclick = loadList;
-  } catch (e) { L.innerHTML = '<button class="back" id="back">‹ Wszystkie paragony</button><div class="err">' + esc(e.message) + '</div>'; $('#back').onclick = loadList; }
+function openReceipt(id) {
+  const r = RECEIPTS.find(x => String(x.id) === String(id)), L = $('#list');
+  L.innerHTML = '<button class="back" id="back">‹ Wszystkie paragony</button>' + receiptHTML(r) + '<button class="btn danger" id="del">Usuń paragon</button>';
+  bindItems(L); $('#back').onclick = loadList;
+  $('#del').onclick = async () => {
+    if (!confirm('Usunąć ten paragon?')) return;
+    try { await DB.remove(r.id); loadList(); } catch (e) { alert(e.message); }
+  };
 }
 
-/* ====== STATYSTYKI ====== */
+/* ====== STATYSTYKI (liczone w przeglądarce) ====== */
 [['#scope', v => scope = v], ['#period', v => period = v]].forEach(([sel, set]) =>
   document.querySelectorAll(sel + ' button').forEach(b => b.onclick = () => {
     set(b.dataset.v);
     document.querySelectorAll(sel + ' button').forEach(x => x.setAttribute('aria-pressed', x === b));
     loadSum();
   }));
+
+const mIdx = ds => { const d = new Date(ds + 'T12:00:00'); return d.getFullYear() * 12 + d.getMonth(); };
+const nowM = () => { const n = new Date(); return n.getFullYear() * 12 + n.getMonth(); };
+function inPeriod(ds) {
+  const m = mIdx(ds), c = nowM();
+  if (period === 'month') return m === c;
+  if (period === 'prev') return m === c - 1;
+  if (period === '3m') return m > c - 3 && m <= c;
+  return new Date(ds + 'T12:00:00').getFullYear() === new Date().getFullYear();
+}
+/* Moje = pozycje przypisane do mnie + połowa wspólnych */
+const weight = i => scope === 'all' ? 1 : i.assignment === 'Wspólne' ? .5 : i.assignment === user ? 1 : 0;
+const toList = (o, extra) => Object.entries(o).map(([name, v]) => ({name, ...extra(v)})).sort((a, b) => b.total - a.total);
+
+function stats() {
+  let total = 0, saved = 0, count = 0, max = null;
+  const cat = {}, asg = {}, per = {}, shops = {}, months = {};
+  for (const r of RECEIPTS) {
+    const m = mIdx(r.purchase_date);
+    let rs = 0;
+    for (const i of r.items || []) {
+      const w = weight(i); if (!w) continue;
+      const a = i.amount * w; rs += a;
+      months[m] = (months[m] || 0) + a;
+      if (!inPeriod(r.purchase_date)) continue;
+      saved += (i.discount || 0) * w;
+      const c = cat[i.category] ??= {total: 0, subs: {}};
+      c.total += a; c.subs[i.subcategory] = (c.subs[i.subcategory] || 0) + a;
+      asg[i.assignment] = (asg[i.assignment] || 0) + a;
+    }
+    if (!inPeriod(r.purchase_date)) continue;
+    per[r.payer] = (per[r.payer] || 0) + (+r.total || 0);
+    if (!rs) continue;
+    total += rs; count++;
+    const s = shops[r.shop] ??= {total: 0, count: 0}; s.total += rs; s.count++;
+    if (!max || rs > max.total) max = {shop: r.shop, total: rs};
+  }
+  const c0 = nowM();
+  return {total, saved, receiptCount: count, avgReceipt: count ? total / count : 0, maxReceipt: max,
+    byPerson: toList(per, v => ({total: v})), byAssign: toList(asg, v => ({total: v})),
+    byCategory: toList(cat, v => ({total: v.total, subs: toList(v.subs, x => ({total: x}))})),
+    topShops: toList(shops, v => v).slice(0, 5),
+    byMonth: [5, 4, 3, 2, 1, 0].map(k => ({label: MON[(c0 - k) % 12], total: months[c0 - k] || 0}))};
+}
 
 function rows(list, total, color) {
   return (list || []).map(c => `
@@ -339,23 +433,23 @@ function rows(list, total, color) {
 async function loadSum() {
   const S = $('#sum'); S.innerHTML = '<div class="mute"><span class="spin"></span>Liczę…</div>';
   try {
-    const d = await api(CFG.SUMMARY_URL, {action: 'summary', scope, period});
-    const T = d.total || 0, maxM = Math.max(1, ...(d.byMonth || []).map(m => m.total));
+    await DB.list();
+    const d = stats(), T = d.total, maxM = Math.max(1, ...d.byMonth.map(m => m.total));
     S.innerHTML = `
       <div class="card">
-        <div class="mute">${scope === 'me' ? 'Twoje wydatki' : 'Wydatki razem'}</div>
+        <div class="mute">${scope === 'me' ? 'Twoje wydatki (Twoje pozycje + połowa wspólnych)' : 'Wydatki razem'}</div>
         <div class="num">${pln(T)}</div>
         <div class="stats">
-          <div><b>${d.receiptCount ?? 0}</b><span class="mute">paragonów</span></div>
+          <div><b>${d.receiptCount}</b><span class="mute">paragonów</span></div>
           <div><b>${pln(d.avgReceipt)}</b><span class="mute">średnio</span></div>
           <div><b>${pln(d.maxReceipt?.total)}</b><span class="mute">${esc(d.maxReceipt?.shop || 'największy')}</span></div>
         </div>
       </div>
       ${d.saved > 0 ? `<div class="card"><div class="mute">Zaoszczędzone na promocjach</div><div class="num" style="color:var(--acc)">${pln(d.saved)}</div><div class="mute">Bez promocji: ${pln(T + d.saved)} (${Math.round(d.saved / (T + d.saved) * 100)}% taniej)</div></div>` : ''}
-      <div class="card"><h3>Kto ile wydał</h3>${rows(d.byPerson, T, true)}</div>
+      <div class="card"><h3>Kto ile zapłacił</h3>${rows(d.byPerson, sum(d.byPerson, p => p.total), true)}</div>
       <div class="card"><h3>Wspólne i osobiste</h3>${rows(d.byAssign, T)}</div>
       <div class="card"><h3>Kategorie</h3>
-        ${(d.byCategory || []).map(c => `
+        ${d.byCategory.map(c => `
           <details class="cat">
             <summary>
               <div class="row"><span>${esc(c.name)}</span><b>${pln(c.total)} <span class="mute">${T ? Math.round(c.total / T * 100) : 0}%</span></b></div>
@@ -365,42 +459,27 @@ async function loadSum() {
           </details>`).join('') || '<div class="mute">Brak danych.</div>'}
       </div>
       <div class="card"><h3>Najczęstsze sklepy</h3>
-        ${(d.topShops || []).map(s => `<div class="row" style="margin-bottom:6px"><span>${esc(s.name)} <span class="mute">× ${s.count}</span></span><b>${pln(s.total)}</b></div>`).join('') || '<div class="mute">Brak danych.</div>'}
+        ${d.topShops.map(s => `<div class="row" style="margin-bottom:6px"><span>${esc(s.name)} <span class="mute">× ${s.count}</span></span><b>${pln(s.total)}</b></div>`).join('') || '<div class="mute">Brak danych.</div>'}
       </div>
-      <div class="card"><h3>Miesiące</h3>
-        <div class="months">${(d.byMonth || []).map(m => `<div><i style="height:${m.total / maxM * 80}px" title="${pln(m.total)}"></i>${esc(m.label)}</div>`).join('')}</div>
+      <div class="card"><h3>Ostatnie miesiące</h3>
+        <div class="months">${d.byMonth.map(m => `<div><i style="height:${m.total / maxM * 80}px" title="${pln(m.total)}"></i>${m.label}</div>`).join('')}</div>
       </div>`;
   } catch (e) { S.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; }
 }
 
-/* ====== MOCK (tryb testowy) ====== */
-const M_ITEMS = [
-  {id: '1', name: 'Mleko 3,2%', amount: 4.49, discount: 0.5, category: 'Jedzenie', subcategory: 'Produkty podstawowe', assignment: 'Wspólne'},
-  {id: '2', name: 'Cola Zero 1,5l', amount: 7.99, discount: 2, category: 'Jedzenie', subcategory: 'Napoje', assignment: 'Bartek'},
-  {id: '3', name: 'Czekolada Milka', amount: 6.49, category: 'Jedzenie', subcategory: 'Słodycze', assignment: 'Oliwia'},
-  {id: '4', name: 'Chipsy paprykowe', amount: 5.99, discount: 1.5, category: 'Jedzenie', subcategory: 'Przekąski', assignment: 'Wspólne'},
-  {id: '5', name: 'Płyn do naczyń', amount: 7.99, category: 'Dom i chemia', subcategory: 'Środki czystości', assignment: 'Wspólne'},
-  {id: '6', name: 'Szampon', amount: 18.99, category: 'Zdrowie i uroda', subcategory: 'Kosmetyki', assignment: 'Oliwia'}];
-function mock(p) {
-  const data = {
-    add: {shop: 'Biedronka', date: '2026-11-21', payer: user, total: 51.94, items: M_ITEMS},
-    receipt: {shop: 'Biedronka', date: '2026-11-21', payer: 'Bartek', total: 51.94, items: M_ITEMS},
-    update: {ok: true},
-    list: {receipts: [
-      {id: 'a', shop: 'Biedronka', saved: 4, total: 51.94, payer: 'Bartek', date: '2026-11-21', status: 'Gotowe'},
-      {id: 'b', shop: 'Pizzeria Napoli', total: 94.5, payer: 'Oliwia', date: '2026-11-19', status: 'Gotowe'}]},
-    summary: {total: 1240.5, saved: 87.4, receiptCount: 31, avgReceipt: 40.02, maxReceipt: {shop: 'Pizzeria', total: 94.5},
-      byPerson: [{name: 'Bartek', total: 720.3}, {name: 'Oliwia', total: 520.2}],
-      byAssign: [{name: 'Wspólne', total: 690}, {name: 'Bartek', total: 310.5}, {name: 'Oliwia', total: 240}],
-      byCategory: [
-        {name: 'Jedzenie', total: 640, subs: [{name: 'Produkty podstawowe', total: 290}, {name: 'Gotowe jedzenie', total: 170}, {name: 'Napoje', total: 80}, {name: 'Słodycze', total: 60}, {name: 'Przekąski', total: 40}]},
-        {name: 'Dom i chemia', total: 210.5, subs: [{name: 'Środki czystości', total: 120.5}, {name: 'Kuchnia i wyposażenie', total: 90}]},
-        {name: 'Transport', total: 180, subs: [{name: 'Paliwo', total: 150}, {name: 'Parking i opłaty', total: 30}]},
-        {name: 'Rozrywka', total: 210, subs: [{name: 'Kino i wydarzenia', total: 120}, {name: 'Gry i subskrypcje', total: 90}]}],
-      topShops: [{name: 'Biedronka', total: 410, count: 12}, {name: 'Rossmann', total: 160, count: 4}, {name: 'Orlen', total: 150, count: 3}],
-      byMonth: [{label: 'cze', total: 980}, {label: 'lip', total: 1100}, {label: 'sie', total: 870}, {label: 'wrz', total: 1210}, {label: 'paź', total: 1150}, {label: 'lis', total: 1240}]}
-  };
-  return new Promise(r => setTimeout(() => r(data[p.action]), 700));
+/* ====== DANE PRZYKŁADOWE (tylko MOCK) ====== */
+function seed() {
+  const it = (name, amount, category, subcategory, assignment, discount = 0) => ({name, amount, discount, category, subcategory, assignment});
+  const R = (id, shop, ago, payer, items) => ({id, shop, purchase_date: iso(ago), payer, items,
+    total: r2(sum(items, i => i.amount)), saved: r2(sum(items, i => i.discount))});
+  return [
+    R('s1', 'Biedronka', 1, 'Bartek', [it('Mleko 3,2%', 4.49, 'Jedzenie', 'Produkty podstawowe', 'Wspólne', .5), it('Cola Zero 1,5l', 7.99, 'Jedzenie', 'Napoje', 'Bartek', 2), it('Czekolada Milka', 6.49, 'Jedzenie', 'Słodycze', 'Oliwia'), it('Chipsy paprykowe', 5.99, 'Jedzenie', 'Przekąski', 'Wspólne', 1.5), it('Płyn do naczyń', 7.99, 'Dom i chemia', 'Środki czystości', 'Wspólne')]),
+    R('s2', 'Pizzeria Napoli', 3, 'Oliwia', [it('Pizza Diavola', 39, 'Jedzenie', 'Gotowe jedzenie', 'Oliwia'), it('Pizza Margherita', 32, 'Jedzenie', 'Gotowe jedzenie', 'Bartek'), it('Lemoniada', 14, 'Jedzenie', 'Napoje', 'Wspólne')]),
+    R('s3', 'Rossmann', 6, 'Oliwia', [it('Szampon', 18.99, 'Zdrowie i uroda', 'Kosmetyki', 'Oliwia', 4), it('Pasta do zębów', 9.99, 'Zdrowie i uroda', 'Higiena', 'Wspólne')]),
+    R('s4', 'Orlen', 12, 'Bartek', [it('Paliwo 95', 210, 'Transport', 'Paliwo', 'Wspólne')]),
+    R('s5', 'Biedronka', 38, 'Oliwia', [it('Makaron', 5.5, 'Jedzenie', 'Produkty podstawowe', 'Wspólne'), it('Wino', 29, 'Jedzenie', 'Alkohol', 'Wspólne', 5), it('Wafelki', 4.2, 'Jedzenie', 'Słodycze', 'Oliwia')]),
+    R('s6', 'Kino', 70, 'Bartek', [it('Bilety', 64, 'Rozrywka', 'Kino i wydarzenia', 'Wspólne')])
+  ];
 }
 
 /* ====== START ====== */
